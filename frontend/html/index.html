@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Docker Fullstack Demo</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 400px; }
+        .status { color: #2ecc71; font-weight: bold; }
+        .data { background: #eee; padding: 10px; border-radius: 5px; font-family: monospace; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🐳 Docker System Status</h2>
+        <p>Frontend: <span class="status">Online (NGINX)</span></p>
+        <p>Backend & DB Status:</p>
+        <div id="backend-data" class="data">Loading from API...</div>
+    </div>
+
+    <script>
+        // ดึงข้อมูลจาก Backend API (พอร์ต 3000)
+        fetch('http://localhost:3000/')
+            .then(response => response.json())
+            .then(data => {
+                const display = document.getElementById('backend-data');
+                display.innerHTML = `
+                    <div>Message: ${data.message}</div>
+                    <div>DB Time: ${data.time}</div>
+                    <div style="color:blue">Status: ${data.status}</div>
+                `;
+            })
+            .catch(err => {
+                document.getElementById('backend-data').innerHTML = "Error connecting to Backend!";
+                console.error(err);
+            });
+    </script>
+</body>
+</html>

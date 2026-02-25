@@ -1,0 +1,36 @@
+services:
+  frontend:
+    container_name: web-app
+    image: nginx:alpine
+    ports:
+      - "8090:80"
+    volumes:      
+      - ./frontend/html:/usr/share/nginx/html:ro
+
+  backend:
+    container_name: api-server
+    build: ./backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules        # Anonymous Volume (กันพัง)
+      - ./backend/logs:/app/logs # Bind Mount (เช็ค log ในเครื่องเรา)
+    environment:
+      - DB_HOST=database
+      - DB_USER=myuser
+      - DB_PASS=mypassword
+      - DB_NAME=postgres
+    depends_on:
+      - database
+
+  database:
+    container_name: db-store
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - db-data:/var/lib/postgresql/data # Named Volume
+
+volumes:
+  db-data:
